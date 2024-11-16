@@ -12,33 +12,31 @@ import MotionLazyContainer from './components/animate/MotionLazyContainer';
 // ----------------------------------------------------------------------
 
 //wagmi
-import { WagmiConfig, createConfig, configureChains } from 'wagmi'
-import { polygonAmoy } from 'wagmi/chains'
- 
-import { alchemyProvider } from 'wagmi/providers/alchemy'
-import { publicProvider } from 'wagmi/providers/public'
+import { WagmiProvider, createConfig, http } from 'wagmi';
+import { polygonAmoy } from "wagmi/chains"; 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
+import { metaMask } from 'wagmi/connectors'
 import { useEffect } from 'react';
 // ----------------------------------------------------------------------
 
-//buffer to invoke wallet connect and coinbase popup
-// window.Buffer = window.Buffer || require("buffer").Buffer;
 
-const { chains, publicClient, webSocketPublicClient  } = configureChains([polygonAmoy], [
-  alchemyProvider({ apiKey: process.env.REACT_APP_AMOY_RPC_URL }),
-  publicProvider(), //not to use in production
-])
-
+// Set up wagmi config
 const config = createConfig({
   autoConnect: true,
+  chains: [polygonAmoy],
+  multiInjectedProviderDiscovery: false,
   connectors: [
-    new MetaMaskConnector({ chains }),
+    metaMask(),
   ],
-  publicClient,
-  webSocketPublicClient,
-})
+  transports: {
+    [polygonAmoy.id]: http(
+      `${process.env.REACT_APP_AMOY_RPC_URL}`,
+    ),
+  },  
+});
+
+const queryClient = new QueryClient();
 
 
 export default function App() {
@@ -87,9 +85,11 @@ export default function App() {
           <MotionLazyContainer>
             <ProgressBarStyle />
             <ScrollToTop />
-            <WagmiConfig config={config}>
+            <WagmiProvider config={config}>
+            <QueryClientProvider client={queryClient}>
             <Router />
-            </WagmiConfig>
+            </QueryClientProvider>
+            </WagmiProvider>
           </MotionLazyContainer>
         </RtlLayout>
       </ThemeColorPresets>
