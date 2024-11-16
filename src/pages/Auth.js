@@ -19,12 +19,9 @@ export default function Auth() {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
-    setOpen(false)
+    setOpen(false);
+    setFormData({email: ''});
   };
-
-  const handleEmailChange = (e) => {
-    setFormData({...formData, email: e.target.value});
-  }
 
   const validateEmail = (email) => {
     // Regular expression for basic token validation
