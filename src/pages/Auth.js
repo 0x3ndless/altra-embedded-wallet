@@ -54,7 +54,7 @@ export default function Auth() {
 
   return (
     <>
-      <Tooltip title="Sign in with your email to create a crypto account" arrow>
+      <Tooltip title={isLoggedIn ? "View your crypto wallet" : "Sign in with your email to create a crypto account"} arrow>
         <Button
           variant="contained"
           size="large"
@@ -66,12 +66,14 @@ export default function Auth() {
         </Button>
       </Tooltip>
 
-      <Dialog open={openDialog}>
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             {isLoggedIn ? null : 'Sign In'}
-            <Button onClick={handleCloseDialog} sx={{ minWidth: 0 }}>
-              <Iconify icon="ic:sharp-close" sx={{ color: 'text.disabled' }} height={22} width={22} />
-            </Button> 
+            {!isLoggedIn && (
+              <Button onClick={handleCloseDialog} sx={{ minWidth: 0 }}>
+                <Iconify icon="ic:sharp-close" sx={{ color: 'text.disabled' }} height={22} width={22} />
+              </Button> 
+            )}
         </DialogTitle>
 
         <DialogContent>
