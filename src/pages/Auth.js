@@ -18,11 +18,6 @@ export default function Auth() {
     return emailRegex.test(decodedEmail);
   };
 
-  const handleDisconnect = () => {
-    localStorage.removeItem('access_token');
-    window.location.reload();
-  }
-
   return (
     <>
       {localStorage.getItem('access_token') !== null ?
