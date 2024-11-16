@@ -1,11 +1,12 @@
 import React from 'react'  
 // @mui
 import { styled } from '@mui/material/styles';
+import { Divider } from '@mui/material';
 // components
 import Page from '../components/Page';
 // sections
 import HomeBanner from './home/HomeBanner';
-
+import HowItWorks from './home/HowItWorks';
 
 // ----------------------------------------------------------------------
 
@@ -24,6 +25,10 @@ export default function Home() {
         <ContentStyle>
 
           <HomeBanner />
+
+          <Divider sx={{ my: 5 }} />
+
+          <HowItWorks />
 
         </ContentStyle>
      

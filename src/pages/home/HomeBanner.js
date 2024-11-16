@@ -18,15 +18,46 @@ const RootStyle = styled('div')(({ theme }) => ({
 }));
 
 
+const emojis = [
+  '📧','📨','💲','⛓️‍💥','📧','📨','💲','⛓️‍💥'
+];
+
+const shuffleArray = (array) => {
+  let currentIndex = array.length;
+  let temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (currentIndex !== 0) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+};
+
 export default function HomeBanner() {
 
- 
+  const shuffledEmojis = shuffleArray([...emojis]);
 
   return (
     <RootStyle>
 
+      <ul className="emoji">
+        {shuffledEmojis.map((emoji, index) => (
+          <li key={index} style={{ animationDuration: `${10 + Math.random() * 10}s` }}>
+            {emoji}
+          </li>
+        ))}
+      </ul>
+
       <Container component={MotionViewport}>
-        <Box sx={{ textAlign: 'center', mb: 7, mt: 4 }}>
+        <Box sx={{ textAlign: 'center', mt: 4 }}>
           <m.div variants={varFade().inUp}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
               <m.div 
@@ -82,6 +113,7 @@ export default function HomeBanner() {
             
           </Stack>
         </Box>
+
       </Container>
     </RootStyle>
   );
