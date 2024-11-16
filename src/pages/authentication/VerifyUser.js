@@ -153,7 +153,7 @@ const VerifyUser = ({ email }) => {
         }
   
         setVerified(true);
-        navigate('/wallet');
+        navigate('/');
         window.location.reload();
       } else {
         setLoading(false);

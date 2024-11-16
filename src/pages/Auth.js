@@ -4,7 +4,9 @@ import { Base64 } from 'js-base64';
 
 //components
 import VerifyUser from './authentication/VerifyUser';
-import { Button, Typography, FormHelperText, Grid, Stack, TextField } from '@mui/material';
+import Wallet from './Wallet';
+import { Button, Typography, FormHelperText, Grid, Stack, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import Iconify from '../components/Iconify';
 
 export default function Auth() {
 
@@ -13,15 +15,15 @@ export default function Auth() {
   
   //Email form
   const [formData, setFormData] = useState({email: ''});
-  const [errorEmail, setErrorEmail] = useState(false); // State for email error
+  const [errorEmail, setErrorEmail] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const searchParams = new URLSearchParams(location.search);
   const token = searchParams.get('token');
   const decodedEmail = Base64.decode(token && token !== null ? token : '');
 
   const validateEmail = (email) => {
-    // Regular expression for email validation
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email);
   }
@@ -33,59 +35,81 @@ export default function Auth() {
     setErrorEmail(isInvalidEmail);
   
     if (!isInvalidEmail) {
-      const encodedEmail = Base64.encode(formData.email);
       setSubmitted(true);
-      navigate(`/auth?token=${encodedEmail}`);
     }
-  }  
+  }
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setErrorEmail(false);
+    setFormData({email: ''});
+    setSubmitted(false);
+  };
+
+  const isLoggedIn = localStorage.getItem('access_token') !== null;
 
   return (
     <>
-      {(!token && !submitted) ? (
-        <>
-          <Typography variant="h4" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2 }}>
-            Sign In
-          </Typography>
+      <Button
+        variant="outlined"
+        size="large"
+        onClick={handleOpenDialog}
+        startIcon={<Iconify icon={isLoggedIn ? "material-symbols:wallet" : "material-symbols:login"} />}
+        sx={{ mt: 2 }}
+      >
+        {isLoggedIn ? 'View Wallet' : 'Sign In'}
+      </Button>
 
-          <Stack component="form" onSubmit={handleEmail} sx={{ p: 1 }}>
-            <Grid item xs={12} sx={{ mb: 2.5}}>
-              <TextField 
-                error={errorEmail}
-                placeholder="Enter your email address" 
-                id="email"
-                variant="outlined"
-                fullWidth
-                autoComplete="on"
-                onChange={e => {
-                  setFormData({...formData, email: e.target.value});
-                  setErrorEmail(false);
-                }}
-                value={formData.email}
-              />
-              {errorEmail && (
-                <FormHelperText sx={{ textAlign: 'left', color: 'error.main' }}>
-                  Invalid email address
-                </FormHelperText>
-              )}
-            </Grid>
+      <Dialog open={openDialog}>
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            {isLoggedIn ? null : 'Sign In'}
+            <Button onClick={handleCloseDialog} sx={{ minWidth: 0 }}>
+              <Iconify icon="ic:sharp-close" sx={{ color: 'text.disabled' }} height={22} width={22} />
+            </Button> 
+        </DialogTitle>
 
-            <Grid item xs={12} sx={{ mb: 1.5 }}>
-              <Button 
-                type="submit"
-                variant="contained" 
-                fullWidth 
-                size="large"
-              >
-                Sign In
+        <DialogContent>
+          {isLoggedIn ? (
+            <Stack  sx={{ p: 1, minWidth: 300 }}>
+            <Wallet />
+            </Stack>
+          ) : !submitted ? (
+            <Stack component="form" onSubmit={handleEmail} sx={{ p: 1, minWidth: 300 }}>
+              <Grid item xs={12} >
+                <TextField 
+                  error={errorEmail}
+                  placeholder="Enter your email address" 
+                  id="email"
+                  variant="outlined"
+                  fullWidth
+                  autoComplete="on"
+                  onChange={e => {
+                    setFormData({...formData, email: e.target.value});
+                    setErrorEmail(false);
+                  }}
+                  value={formData.email}
+                />
+                {errorEmail && (
+                  <FormHelperText sx={{ textAlign: 'left', color: 'error.main' }}>
+                    Invalid email address
+                  </FormHelperText>
+                )}
+              </Grid>
+              <Grid item xs={12} sx={{ mb: 1.5, mt: 2 }}>
+              <Button variant="contained" fullWidth size="large" onClick={handleEmail}>
+                Continue
               </Button>
             </Grid>
-          </Stack>
-        </>
-      ) : (
-        <>
-          {token && validateEmail(decodedEmail) && <VerifyUser email={decodedEmail} />}
-        </>
-      )}
+            </Stack>
+          ) : (
+            <VerifyUser email={formData.email} />
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
