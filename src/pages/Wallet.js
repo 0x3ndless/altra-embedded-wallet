@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useBalance } from 'wagmi'
 //---------------Mui -----------------
 import { Divider, Link, Box, Typography, CardContent, Avatar, Button, Tooltip, CircularProgress } from "@mui/material";
@@ -15,7 +15,7 @@ import WalletSend from './wallet/WalletSend';
 
 
 const Wallet = () => {
-
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const { loadingWallet, walletData, generalChains } = useSelector((state) => ({...state.app}));
 
@@ -95,7 +95,9 @@ const Wallet = () => {
 
     const handleLogOut = () => {
         localStorage.removeItem('access_token');
+        navigate('/auth');
         window.location.reload();
+
       }
     
     

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Button from "@mui/material/Button";
 import { CardContent, CircularProgress, Divider, FormHelperText, Grid, OutlinedInput, Stack, Typography } from "@mui/material";
+import { useNavigate } from 'react-router-dom';
 
 //--------------------Redux---------------------------------
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,6 +11,7 @@ import { generateWallet, reconstructDeviceShare } from './WalletUtils';
 const VerifyUser = ({ email }) => {
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { loadingAuth, authCodeDetails } = useSelector((state) => ({ ...state.app }));
 
   //------------------States------------------
@@ -112,6 +114,8 @@ const VerifyUser = ({ email }) => {
         }
   
         setVerified(true);
+        navigate('/wallet');
+        window.location.reload();
       } else {
         setLoading(false);
         setOtpValid(false);
@@ -228,7 +232,7 @@ const VerifyUser = ({ email }) => {
           <Grid container alignItems="center" sx={{ mt: 1.5 }}>
             <Grid item xs={6}>
               <Typography variant="body2" sx={{ textAlign: 'left', color: 'text.secondary' }}>
-                Don’t have a code?
+                Don't have a code?
               </Typography>
             </Grid>
             <Grid item xs={6} sx={{ textAlign: 'right' }}>
