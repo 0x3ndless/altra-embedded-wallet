@@ -1,27 +1,18 @@
 import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Base64 } from 'js-base64';
 
 //components
 import VerifyUser from './authentication/VerifyUser';
 import Wallet from './Wallet';
-import { Button, Typography, FormHelperText, Grid, Stack, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Tooltip } from '@mui/material';
+import { Button, FormHelperText, Grid, Stack, TextField, Dialog, DialogTitle, DialogContent, Tooltip } from '@mui/material';
 import Iconify from '../components/Iconify';
 
 export default function Auth() {
 
-  const location = useLocation();
-  const navigate = useNavigate();
-  
   //Email form
   const [formData, setFormData] = useState({email: ''});
   const [errorEmail, setErrorEmail] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-
-  const searchParams = new URLSearchParams(location.search);
-  const token = searchParams.get('token');
-  const decodedEmail = Base64.decode(token && token !== null ? token : '');
 
   const validateEmail = (email) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
