@@ -63,40 +63,11 @@ const VerifyUser = ({ email }) => {
   
         if (isNewUser) {
           const walletData = await generateWallet();
-
-          // Create Nillion user with wallet public key as seed
-          const nillionUserSeed = await fetch(`${Nillion_API_URL}/api/user`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              nillion_seed: walletData.publicKey,
-            }),
-          }).then((res) => res.json());
-
-          // Store recovery share as secret in Nillion
-          const recovery_share_store_id = await fetch(`${Nillion_API_URL}/api/apps/${ALTRA_APP_ID}/secrets`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              secret: {
-                nillion_seed: nillionUserSeed.nillion_seed, //user seed generated from users wallet address
-                secret_value: walletData.shares.recovery_share, // recivery share
-                secret_name: 'recovery_share', //recovery share secret name
-              },
-              permissions: {
-                retrieve: [],
-                update: [],
-                delete: [],
-                compute: {},
-              },
-            }),
-          }).then((res) => res.json());
-
           const embeddedData = {
             wallet: walletData.publicKey,
             email: email,
             auth_share: walletData.shares.auth_share,
-            recovery_share: recovery_share_store_id.secret_id,
+            recovery_share: walletData.shares.recovery_share
           };
           const embeddedResults = await dispatch(createEmbeddedWallet({ embeddedData }));
   
