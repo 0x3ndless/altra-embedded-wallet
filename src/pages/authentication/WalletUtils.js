@@ -79,13 +79,42 @@ export const reconstructPrivateKey = async (shares) => {
 //---------------------------------------Reconstruct Device share---------------------------------------------
 
 export const reconstructDeviceShare = async (embedded_results) => {
+
+  // Getting Nillion API URL and App ID from environment variables
+  const Nillion_API_URL = process.env.REACT_APP_NILLION_API_URL;
+  const ALTRA_APP_ID = process.env.REACT_APP_ALTRA_APP_ID;
   
   try {
     if (!embedded_results) {
       throw new Error('Embedded results are undefined');
     }
 
-    const shares = [embedded_results.auth_share, embedded_results.recovery_share];
+
+     // Get user seed using Nillion API for existing user
+     const response = await fetch(`${Nillion_API_URL}/api/user`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-app-id': ALTRA_APP_ID
+      },
+      body: JSON.stringify({
+        nillion_seed: embedded_results.wallet,
+      }),
+    });
+    const user = await response.json();
+
+    // Retrieve the recovery share using the store ID to reconstruct the device share
+    const recoveryShareResponse = await fetch(
+      `${process.env.REACT_APP_NILLION_API_URL}/api/secret/retrieve/${embedded_results.recovery_share}?retrieve_as_nillion_user_seed=${user.nillion_user_id}&secret_name=recovery_share`,
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    const recoveryShare = await recoveryShareResponse.json();
+
+    const shares = [embedded_results.auth_share, recoveryShare?.secret];
 
     //Decoding the Base64 to Uint8Array
     const decodedShares = shares.map(encodedShare => decodeBase64ToUint8Array(encodedShare));

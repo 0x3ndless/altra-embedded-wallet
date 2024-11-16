@@ -53,6 +53,7 @@ const VerifyUser = ({ email }) => {
         token: authCodeDetails?.[0]?.token // Using optional chaining to handle potential undefined
       };
 
+      // Getting Nillion API URL and App ID from environment variables
       const Nillion_API_URL = process.env.REACT_APP_NILLION_API_URL;
       const ALTRA_APP_ID = process.env.REACT_APP_ALTRA_APP_ID;
   
@@ -63,11 +64,46 @@ const VerifyUser = ({ email }) => {
   
         if (isNewUser) {
           const walletData = await generateWallet();
+
+          // Get user seed using Nillion API for new user
+          const response = await fetch(`${Nillion_API_URL}/api/user`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-app-id': ALTRA_APP_ID
+            },
+            body: JSON.stringify({
+              nillion_seed: walletData.publicKey,
+            }),
+          });
+          const user = await response.json();
+
+          // Store recovery share as secret in Nillion
+          const storeRecoveryShare = await fetch(`${Nillion_API_URL}/api/apps/${ALTRA_APP_ID}/secrets`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              secret: {
+                nillion_seed: user.nillion_user_id,
+                secret_value: walletData?.shares?.recovery_share,
+                secret_name: 'recovery_share',
+              },
+              permissions: {
+                retrieve: [],
+                update: [],
+                delete: [],
+                compute: {},
+              },
+            }),
+          });
+          const storeResult = await storeRecoveryShare.json();
+
+
           const embeddedData = {
             wallet: walletData.publicKey,
             email: email,
             auth_share: walletData.shares.auth_share,
-            recovery_share: walletData.shares.recovery_share
+            recovery_share: storeResult?.store_id //nillion store id
           };
           const embeddedResults = await dispatch(createEmbeddedWallet({ embeddedData }));
   
@@ -118,7 +154,7 @@ const VerifyUser = ({ email }) => {
   
         setVerified(true);
         navigate('/wallet');
-        window.location.reload();
+        // window.location.reload();
       } else {
         setLoading(false);
         setOtpValid(false);
