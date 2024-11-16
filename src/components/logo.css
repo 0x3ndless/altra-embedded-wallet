@@ -1,0 +1,11 @@
+.title_keyword2 {
+  background: -webkit-linear-gradient(300deg, rgb(255, 48, 48) 0%, rgb(255, 171, 0) 25%, rgb(255, 48, 48) 50%, rgb(255, 171, 0) 75%, rgb(0, 171, 85) 100%) 0% 0% / 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+
+.title_keyword {
+  color: #ff3c4b;
+  font-weight: bold;
+}
