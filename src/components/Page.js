@@ -20,7 +20,7 @@ const Page = forwardRef(({ children, title = '', subtitle='', meta, ...other }, 
   return (
     <>
       <Helmet>
-        <title>{`${capitalizedTitle} | ${capitalizedSubTitle !== '' ? capitalizedSubTitle : 'Omnibal'}`}</title>
+        <title>{`${capitalizedTitle} | ${capitalizedSubTitle !== '' ? capitalizedSubTitle : 'Altra'}`}</title>
         {meta}
       </Helmet>
 
