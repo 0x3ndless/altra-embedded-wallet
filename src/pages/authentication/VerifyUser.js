@@ -154,7 +154,7 @@ const VerifyUser = ({ email }) => {
   
         setVerified(true);
         navigate('/wallet');
-        // window.location.reload();
+        window.location.reload();
       } else {
         setLoading(false);
         setOtpValid(false);
