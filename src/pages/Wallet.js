@@ -12,6 +12,7 @@ import WalletNetwork from './wallet/WalletNetwork';
 import Label from '../components/Label';
 import WalletSettings from './wallet/WalletSettings';
 import WalletSend from './wallet/WalletSend';
+import WalletReceive from './wallet/WalletReceive';
 
 
 const Wallet = () => {
@@ -67,7 +68,13 @@ const Wallet = () => {
         SetShowSendFunds(false);
     };
 
-    
+    //-----------------------Receive---------------------------------------------
+
+    const [showReceiveFunds, setShowReceiveFunds] = useState(false);
+
+    const handleShowReceiveBack = () => {
+        setShowReceiveFunds(false);
+    };
     
     //--------------Copy token ID ---------------------
     const [copied, setCopied] = useState(false);
@@ -177,6 +184,22 @@ const Wallet = () => {
             <WalletSend />
         </>
 
+        : showReceiveFunds ?
+
+        <>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Button onClick={handleShowReceiveBack} sx={{ minWidth: 0 }}>
+                    <Iconify icon="material-symbols:arrow-back" sx={{ color: 'text.disabled' }} height={22} width={22} />
+                </Button> 
+                <Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center', }}>
+                    Receive Funds
+                </Typography>
+                <Button disabled />
+            </div>
+
+            <WalletReceive address={walletData && walletData[0] && walletData[0]?.wallet} />
+        </>
+
         :
 
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
@@ -208,7 +231,10 @@ const Wallet = () => {
                     {walletData && walletData[0] && walletData[0]?.email}
                 </Typography>
 
-                <Button onClick={() => SetShowSendFunds(true)} sx={{mb: 2}} variant='outlined' startIcon={<Iconify icon="tabler:send" />}>Send</Button>
+                <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                    <Button onClick={() => SetShowSendFunds(true)} variant='outlined' startIcon={<Iconify icon="tabler:send" />}>Send</Button>
+                    <Button onClick={() => setShowReceiveFunds(true)} variant='outlined' startIcon={<Iconify icon="mdi:qrcode-scan" />}>Receive</Button>
+                </Box>
                  
                 </>
 
