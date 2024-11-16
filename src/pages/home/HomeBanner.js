@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { m } from 'framer-motion';
 import { styled } from '@mui/material/styles';
-import { Box, Container, Stack, Tooltip, Typography, useMediaQuery } from '@mui/material';
+import { Box, Container, Link, Stack, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import './home.css';
 import { MotionViewport, varFade } from '../../components/animate';
+import Auth from '../Auth';
 
 const RootStyle = styled('div')(({ theme }) => ({
   paddingTop: 0,
@@ -55,7 +56,7 @@ export default function HomeBanner() {
                 mt: 1.5,
               }}
             >
-              Your Crypto Wallet, Just an Email Away. Start your crypto journey effortlessly no experience needed, just seconds to get started!
+              <strong>Your Crypto Wallet, Just an Email Away.</strong> Start your crypto journey effortlessly no experience needed, just seconds to get started!
             </Typography>
           </m.div>
 
@@ -66,10 +67,19 @@ export default function HomeBanner() {
               </Typography>
             </m.div>
 
-            <Stack direction="row" justifyContent="center" spacing={3} sx={{mt: 2 }}>
-              <m.img variants={varFade().inUp} src="/icons/nillion.svg" width={60} />    
-              <m.img variants={varFade().inUp} src="/icons/blockscout.svg" width={60} />     
+            <Stack direction="row" justifyContent="center" spacing={3} sx={{mt: 2 }} >
+              <Link href={`https://nillion.com/`} target="_blank" rel="noopener">
+                <m.img variants={varFade().inUp} src="/icons/nillion.png" width={70} />    
+              </Link>
+              <Link href={`https://www.blockscout.com/`} target="_blank" rel="noopener">
+                <m.img variants={varFade().inUp} src="/icons/blockscout.png" width={110} />      
+              </Link> 
             </Stack>
+
+            <m.div variants={varFade().inUp}>
+              <Auth />
+            </m.div>
+            
           </Stack>
         </Box>
       </Container>

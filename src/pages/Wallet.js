@@ -107,7 +107,7 @@ const Wallet = () => {
 
     const handleLogOut = () => {
         localStorage.removeItem('access_token');
-        navigate('/auth');
+        navigate('/');
         window.location.reload();
     }
 

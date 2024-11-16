@@ -5,7 +5,7 @@ import { Base64 } from 'js-base64';
 //components
 import VerifyUser from './authentication/VerifyUser';
 import Wallet from './Wallet';
-import { Button, Typography, FormHelperText, Grid, Stack, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Button, Typography, FormHelperText, Grid, Stack, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Tooltip } from '@mui/material';
 import Iconify from '../components/Iconify';
 
 export default function Auth() {
@@ -54,15 +54,17 @@ export default function Auth() {
 
   return (
     <>
-      <Button
-        variant="outlined"
-        size="large"
-        onClick={handleOpenDialog}
-        startIcon={<Iconify icon={isLoggedIn ? "material-symbols:wallet" : "material-symbols:login"} />}
-        sx={{ mt: 2 }}
-      >
-        {isLoggedIn ? 'View Wallet' : 'Sign In'}
-      </Button>
+      <Tooltip title="Sign in with your email to create a crypto account" arrow>
+        <Button
+          variant="contained"
+          size="large"
+          onClick={handleOpenDialog}
+          startIcon={<Iconify icon={isLoggedIn ? "material-symbols:wallet" : "material-symbols:login"} />}
+          sx={{ mt: 5 }}
+        >
+          {isLoggedIn ? 'View Wallet' : 'Sign In'}
+        </Button>
+      </Tooltip>
 
       <Dialog open={openDialog}>
         <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
